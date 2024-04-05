@@ -5,9 +5,16 @@ import plotly.express as px
 vehicles = pd.read_csv('./vehicles_us.csv')
 vehicles['is_4wd'] = vehicles['is_4wd'].fillna(0)
 vehicles['paint_color'] = vehicles['paint_color'].fillna('n/a')
-vehicles['odometer'] = vehicles['odometer'].fillna('n/a')
-vehicles['model_year'] = vehicles['model_year'].fillna('n/a')
-vehicles['cylinders'] = vehicles['cylinders'].fillna('n/a')
+
+odom_med = vehicles['odometer'].median()
+vehicles['odometer'] = vehicles['odometer'].fillna(odom_med)
+
+year_med = vehicles['model_year'].median()
+vehicles['model_year'] = vehicles['model_year'].fillna(year_med)
+
+cyl_med = vehicles['cylinders'].median()
+vehicles['cylinders'] = vehicles['cylinders'].fillna(cyl_med)
+
 vehicles['manufacturer']=vehicles['model'].apply(lambda x: x.split()[0])
 # Text Header
 st.header('Data Viewer')
@@ -21,7 +28,7 @@ fig1 = px.scatter(vehicles,
                   y='price',
                   color='manufacturer',
                   color_discrete_sequence=px.colors.qualitative.Alphabet)
-fig1.update_layout(xaxis_range=[1900,2020])
+fig1.update_layout(xaxis_range=[1945,2020], yaxis_range=[500,200000])
 # display scatterplot
 st.write(fig1)
 
